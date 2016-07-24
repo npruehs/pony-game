@@ -31,3 +31,5 @@ Bin/
 Obj/
 *.suo
 *.sdf
+*.opensdf
+Project/ipch/
