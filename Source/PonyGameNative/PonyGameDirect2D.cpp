@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "PonyGameDirect2D.h"
 
-HRESULT PonyGame::InitializeWindow()
+#include "PonyGameString.h"
+
+HRESULT PonyGame::InitializeWindow(const char* gameName, const int width, const int height)
 {
 	HRESULT hr;
 
@@ -38,12 +40,12 @@ HRESULT PonyGame::InitializeWindow()
 	// Create the window.
 	hwnd = CreateWindow(
 		L"PonyGame",
-		L"Direct2D Demo App",
+		StringToWString(std::string(gameName)).c_str(),
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		static_cast<UINT>(ceil(640.f * dpiX / 96.f)),
-		static_cast<UINT>(ceil(480.f * dpiY / 96.f)),
+		static_cast<UINT>(ceil(width * dpiX / 96.f)),
+		static_cast<UINT>(ceil(height * dpiY / 96.f)),
 		NULL,
 		NULL,
 		HINST_THISCOMPONENT,
@@ -295,7 +297,7 @@ void PonyGame::OnResize(UINT width, UINT height)
 }
 
 
-PONYGAMENATIVE_API bool Initialize(void)
+PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const int height)
 {
 	using namespace PonyGame;
 
@@ -310,7 +312,7 @@ PONYGAMENATIVE_API bool Initialize(void)
 	lightSlateGrayBrush = NULL;
 	cornflowerBlueBrush = NULL;
 
-	return SUCCEEDED(InitializeWindow());
+	return SUCCEEDED(InitializeWindow(gameName, width, height));
 }
 
 PONYGAMENATIVE_API bool Render(void)

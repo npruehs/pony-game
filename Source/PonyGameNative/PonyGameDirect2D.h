@@ -6,7 +6,7 @@
 namespace PonyGame
 {
 	// Register the window class and call methods for instantiating drawing resources.
-	HRESULT InitializeWindow();
+	HRESULT InitializeWindow(const char* gameName, const int width, const int height);
 
 	// Initialize device-independent resources.
 	HRESULT CreateDeviceIndependentResources();
@@ -50,7 +50,7 @@ namespace PonyGame
 
 extern "C"
 {
-	PONYGAMENATIVE_API bool Initialize(void);
+	PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const int height);
 	PONYGAMENATIVE_API bool Render(void);
 	PONYGAMENATIVE_API void Uninitialize(void);
 }
