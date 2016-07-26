@@ -3,51 +3,55 @@
 #include "stdafx.h"
 #include "PonyGameNative.h"
 
+namespace PonyGame
+{
+	// Register the window class and call methods for instantiating drawing resources.
+	HRESULT InitializeWindow(const char* gameName, const int width, const int height);
 
-// Register the window class and call methods for instantiating drawing resources
-HRESULT InitializeWindow();
+	// Initialize device-independent resources.
+	HRESULT CreateDeviceIndependentResources();
 
-// Initialize device-independent resources.
-HRESULT CreateDeviceIndependentResources();
+	// Initialize device-dependent resources.
+	HRESULT CreateDeviceResources();
 
-// Initialize device-dependent resources.
-HRESULT CreateDeviceResources();
+	// Release device-dependent resource.
+	void DiscardDeviceResources();
 
-// Release device-dependent resource.
-void DiscardDeviceResources();
+	// Draw content.
+	HRESULT OnRender();
 
-// Draw content.
-HRESULT OnRender();
+	// Resize the render target.
+	void OnResize(
+		UINT width,
+		UINT height
+		);
 
-// Resize the render target.
-void OnResize(
-	UINT width,
-	UINT height
-	);
+	// Handle window events.
+	static LRESULT CALLBACK WndProc(
+		HWND hWnd,
+		UINT message,
+		WPARAM wParam,
+		LPARAM lParam
+		);
 
-// The windows procedure.
-static LRESULT CALLBACK WndProc(
-	HWND hWnd,
-	UINT message,
-	WPARAM wParam,
-	LPARAM lParam
-	);
+	// Render target window.
+	HWND hwnd;
 
-HWND m_hwnd;
-ID2D1Factory* m_pDirect2dFactory;
-ID2D1HwndRenderTarget* m_pRenderTarget;
-ID2D1SolidColorBrush* m_pLightSlateGrayBrush;
-ID2D1SolidColorBrush* m_pCornflowerBlueBrush;
+	// Direct2D factory for creating render targets.
+	ID2D1Factory* direct2dFactory;
 
+	// Direct2D render target for rendering to the window.
+	ID2D1HwndRenderTarget* renderTarget;
 
-class Test {};
-
-Test* test;
+	// Render target clear color.
+	D2D1::ColorF clearColor = D2D1::ColorF::Black;
+}
 
 
 extern "C"
 {
-	PONYGAMENATIVE_API bool Initialize(void);
+	PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const int height);
+	PONYGAMENATIVE_API void SetClearColor(float red, float green, float blue, float alpha);
 	PONYGAMENATIVE_API bool Render(void);
 	PONYGAMENATIVE_API void Uninitialize(void);
 }

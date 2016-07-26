@@ -27,6 +27,9 @@
     <ClInclude Include="..\Source\PonyGameNative\PonyGameDirect2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\PonyGameNative\PonyGameString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../Source/PonygameNative/stdafx.cpp">
