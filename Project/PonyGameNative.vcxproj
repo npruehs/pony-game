@@ -148,6 +148,7 @@
     <ClInclude Include="../Source/PonygameNative/PonyGameNative.h" />
     <ClInclude Include="../Source/PonygameNative/stdafx.h" />
     <ClInclude Include="../Source/PonygameNative/targetver.h" />
+    <ClInclude Include="..\Source\PonyGameNative\PonyGameDirect2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../Source/PonygameNative/dllmain.cpp">
@@ -164,7 +165,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="../Source/PonygameNative/PonyGameNative.cpp" />
+    <ClCompile Include="..\Source\PonygameNative\PonyGameDirect2D.cpp" />
     <ClCompile Include="../Source/PonygameNative/stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

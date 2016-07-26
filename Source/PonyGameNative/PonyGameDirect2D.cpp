@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "PonyGameNative.h"
+#include "PonyGameDirect2D.h"
 
 
 HRESULT InitializeWindow()
@@ -72,7 +72,7 @@ HRESULT CreateDeviceIndependentResources()
 {
 	HRESULT hr = S_OK;
 
-	// Create a Direct2D factory.
+	// Create a Direct2D factory for creating render targets.
 	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pDirect2dFactory);
 
 	return hr;
@@ -93,7 +93,7 @@ HRESULT CreateDeviceResources()
 			rc.bottom - rc.top
 			);
 
-		// Create a Direct2D render target.
+		// Create a Direct2D render target for rendering to the window.
 		hr = m_pDirect2dFactory->CreateHwndRenderTarget(
 			D2D1::RenderTargetProperties(),
 			D2D1::HwndRenderTargetProperties(m_hwnd, size),
