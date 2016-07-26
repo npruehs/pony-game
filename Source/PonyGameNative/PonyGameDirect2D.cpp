@@ -222,7 +222,7 @@ HRESULT PonyGame::OnRender()
 
 	renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-	renderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+	renderTarget->Clear(clearColor);
 
 	D2D1_SIZE_F rtSize = renderTarget->GetSize();
 
@@ -311,8 +311,16 @@ PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const 
 	renderTarget = NULL;
 	lightSlateGrayBrush = NULL;
 	cornflowerBlueBrush = NULL;
+	clearColor = D2D1::ColorF::CornflowerBlue;
 
 	return SUCCEEDED(InitializeWindow(gameName, width, height));
+}
+
+PONYGAMENATIVE_API void SetClearColor(float red, float green, float blue, float alpha)
+{
+	using namespace PonyGame;
+
+	clearColor = D2D1::ColorF(red, green, blue, alpha);
 }
 
 PONYGAMENATIVE_API bool Render(void)

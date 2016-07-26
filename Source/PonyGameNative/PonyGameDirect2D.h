@@ -43,6 +43,9 @@ namespace PonyGame
 	// Direct2D render target for rendering to the window.
 	ID2D1HwndRenderTarget* renderTarget;
 
+	// Render target clear color.
+	D2D1::ColorF clearColor = D2D1::ColorF::Black;
+
 	ID2D1SolidColorBrush* lightSlateGrayBrush;
 	ID2D1SolidColorBrush* cornflowerBlueBrush;
 }
@@ -51,6 +54,7 @@ namespace PonyGame
 extern "C"
 {
 	PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const int height);
+	PONYGAMENATIVE_API void SetClearColor(float red, float green, float blue, float alpha);
 	PONYGAMENATIVE_API bool Render(void);
 	PONYGAMENATIVE_API void Uninitialize(void);
 }
