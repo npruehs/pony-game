@@ -149,6 +149,7 @@
     <ClInclude Include="../Source/PonygameNative/stdafx.h" />
     <ClInclude Include="../Source/PonygameNative/targetver.h" />
     <ClInclude Include="..\Source\PonyGameNative\PonyGameDirect2D.h" />
+    <ClInclude Include="..\Source\PonyGameNative\PonyGameString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../Source/PonygameNative/dllmain.cpp">
