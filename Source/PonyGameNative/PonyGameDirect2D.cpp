@@ -99,36 +99,12 @@ HRESULT PonyGame::CreateDeviceResources()
 		&renderTarget
 		);
 
-	if (!SUCCEEDED(hr))
-	{
-		return hr;
-	}
-
-	// Create a gray brush.
-	hr = renderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::LightSlateGray),
-		&lightSlateGrayBrush
-		);
-
-	if (!SUCCEEDED(hr))
-	{
-		return hr;
-	}
-
-	// Create a blue brush.
-	hr = renderTarget->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF::CornflowerBlue),
-		&cornflowerBlueBrush
-		);
-
 	return hr;
 }
 
 void PonyGame::DiscardDeviceResources()
 {
 	SafeRelease(&renderTarget);
-	SafeRelease(&lightSlateGrayBrush);
-	SafeRelease(&cornflowerBlueBrush);
 }
 
 LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -219,59 +195,10 @@ HRESULT PonyGame::OnRender()
 	}
 
 	renderTarget->BeginDraw();
-
-	renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-
-	renderTarget->Clear(clearColor);
-
-	D2D1_SIZE_F rtSize = renderTarget->GetSize();
-
-	// Draw a grid background.
-	int width = static_cast<int>(rtSize.width);
-	int height = static_cast<int>(rtSize.height);
-
-	for (int x = 0; x < width; x += 10)
 	{
-		renderTarget->DrawLine(
-			D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
-			D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
-			lightSlateGrayBrush,
-			0.5f
-			);
+		renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+		renderTarget->Clear(clearColor);
 	}
-
-	for (int y = 0; y < height; y += 10)
-	{
-		renderTarget->DrawLine(
-			D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
-			D2D1::Point2F(rtSize.width, static_cast<FLOAT>(y)),
-			lightSlateGrayBrush,
-			0.5f
-			);
-	}
-
-	// Draw two rectangles.
-	D2D1_RECT_F rectangle1 = D2D1::RectF(
-		rtSize.width / 2 - 50.0f,
-		rtSize.height / 2 - 50.0f,
-		rtSize.width / 2 + 50.0f,
-		rtSize.height / 2 + 50.0f
-		);
-
-	D2D1_RECT_F rectangle2 = D2D1::RectF(
-		rtSize.width / 2 - 100.0f,
-		rtSize.height / 2 - 100.0f,
-		rtSize.width / 2 + 100.0f,
-		rtSize.height / 2 + 100.0f
-		);
-
-
-	// Draw a filled rectangle.
-	renderTarget->FillRectangle(&rectangle1, lightSlateGrayBrush);
-
-	// Draw the outline of a rectangle.
-	renderTarget->DrawRectangle(&rectangle2, cornflowerBlueBrush);
-
 	hr = renderTarget->EndDraw();
 
 	if (hr == D2DERR_RECREATE_TARGET)
@@ -309,8 +236,6 @@ PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const 
 	hwnd = NULL;
 	direct2dFactory = NULL;
 	renderTarget = NULL;
-	lightSlateGrayBrush = NULL;
-	cornflowerBlueBrush = NULL;
 	clearColor = D2D1::ColorF::CornflowerBlue;
 
 	return SUCCEEDED(InitializeWindow(gameName, width, height));
@@ -343,8 +268,6 @@ PONYGAMENATIVE_API void Uninitialize(void)
 
 	SafeRelease(&direct2dFactory);
 	SafeRelease(&renderTarget);
-	SafeRelease(&lightSlateGrayBrush);
-	SafeRelease(&cornflowerBlueBrush);
 
 	CoUninitialize();
 }

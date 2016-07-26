@@ -45,9 +45,6 @@ namespace PonyGame
 
 	// Render target clear color.
 	D2D1::ColorF clearColor = D2D1::ColorF::Black;
-
-	ID2D1SolidColorBrush* lightSlateGrayBrush;
-	ID2D1SolidColorBrush* cornflowerBlueBrush;
 }
 
 
