@@ -1,6 +1,3 @@
-// PonyGameNative.cpp : Defines the exported functions for the DLL application.
-//
-
 #include "stdafx.h"
 #include "PonyGameDirect2D.h"
 
@@ -8,8 +5,7 @@ HRESULT PonyGame::InitializeWindow()
 {
 	HRESULT hr;
 
-	// Initialize device-indpendent resources, such
-	// as the Direct2D factory.
+	// Initialize device-independent resources, such as the Direct2D factory.
 	hr = CreateDeviceIndependentResources();
 
 	if (SUCCEEDED(hr))
@@ -24,23 +20,21 @@ HRESULT PonyGame::InitializeWindow()
 		wcex.hbrBackground = NULL;
 		wcex.lpszMenuName = NULL;
 		wcex.hCursor = LoadCursor(NULL, IDI_APPLICATION);
-		wcex.lpszClassName = L"D2DDemoApp";
+		wcex.lpszClassName = L"PonyGame";
 
 		RegisterClassEx(&wcex);
-
 
 		// Because the CreateWindow function takes its size in pixels,
 		// obtain the system DPI and use it to scale the window size.
 		FLOAT dpiX, dpiY;
 
-		// The factory returns the current system DPI. This is also the value it will use
-		// to create its own windows.
+		// The factory returns the current system DPI.
+		// This is also the value it will use to create its own windows.
 		direct2dFactory->GetDesktopDpi(&dpiX, &dpiY);
-
 
 		// Create the window.
 		hwnd = CreateWindow(
-			L"D2DDemoApp",
+			L"PonyGame",
 			L"Direct2D Demo App",
 			WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT,
@@ -52,18 +46,18 @@ HRESULT PonyGame::InitializeWindow()
 			HINST_THISCOMPONENT,
 			(LPVOID)1
 			);
+
 		hr = hwnd ? S_OK : E_FAIL;
+
 		if (SUCCEEDED(hr))
 		{
 			ShowWindow(hwnd, SW_SHOWNORMAL);
-
 			UpdateWindow(hwnd);
 		}
 	}
 
 	return hr;
 }
-
 
 HRESULT PonyGame::CreateDeviceIndependentResources()
 {
@@ -74,7 +68,6 @@ HRESULT PonyGame::CreateDeviceIndependentResources()
 
 	return hr;
 }
-
 
 HRESULT PonyGame::CreateDeviceResources()
 {
@@ -97,7 +90,6 @@ HRESULT PonyGame::CreateDeviceResources()
 			&renderTarget
 			);
 
-
 		if (SUCCEEDED(hr))
 		{
 			// Create a gray brush.
@@ -106,6 +98,7 @@ HRESULT PonyGame::CreateDeviceResources()
 				&lightSlateGrayBrush
 				);
 		}
+
 		if (SUCCEEDED(hr))
 		{
 			// Create a blue brush.
@@ -119,7 +112,6 @@ HRESULT PonyGame::CreateDeviceResources()
 	return hr;
 }
 
-
 void PonyGame::DiscardDeviceResources()
 {
 	SafeRelease(&renderTarget);
@@ -127,15 +119,12 @@ void PonyGame::DiscardDeviceResources()
 	SafeRelease(&cornflowerBlueBrush);
 }
 
-
 LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
 	LRESULT result = 0;
 
 	if (message == WM_CREATE)
 	{
-
 		LPCREATESTRUCT pcs = (LPCREATESTRUCT)lParam;
 
 		::SetWindowLongPtrW(
@@ -148,17 +137,15 @@ LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARA
 	}
 	else
 	{
-
-		LONG_PTR pDemoApp = static_cast<LONG_PTR>(
+		LONG_PTR window = static_cast<LONG_PTR>(
 			::GetWindowLongPtrW(
 				hwnd,
 				GWLP_USERDATA
 				));
 
-
 		bool wasHandled = false;
 
-		if (pDemoApp)
+		if (window)
 		{
 			switch (message)
 			{
@@ -208,14 +195,11 @@ LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARA
 	return result;
 }
 
-
-
 HRESULT PonyGame::OnRender()
 {
 	HRESULT hr = S_OK;
 
 	hr = CreateDeviceResources();
-
 
 	if (SUCCEEDED(hr))
 	{
@@ -226,7 +210,6 @@ HRESULT PonyGame::OnRender()
 		renderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
 		D2D1_SIZE_F rtSize = renderTarget->GetSize();
-
 
 		// Draw a grid background.
 		int width = static_cast<int>(rtSize.width);
@@ -271,14 +254,11 @@ HRESULT PonyGame::OnRender()
 		// Draw a filled rectangle.
 		renderTarget->FillRectangle(&rectangle1, lightSlateGrayBrush);
 
-
 		// Draw the outline of a rectangle.
 		renderTarget->DrawRectangle(&rectangle2, cornflowerBlueBrush);
 
-
 		hr = renderTarget->EndDraw();
 	}
-
 
 	if (hr == D2DERR_RECREATE_TARGET)
 	{
@@ -286,10 +266,8 @@ HRESULT PonyGame::OnRender()
 		DiscardDeviceResources();
 	}
 
-
 	return hr;
 }
-
 
 void PonyGame::OnResize(UINT width, UINT height)
 {
