@@ -4,8 +4,7 @@
 #include "stdafx.h"
 #include "PonyGameDirect2D.h"
 
-
-HRESULT InitializeWindow()
+HRESULT PonyGame::InitializeWindow()
 {
 	HRESULT hr;
 
@@ -36,13 +35,11 @@ HRESULT InitializeWindow()
 
 		// The factory returns the current system DPI. This is also the value it will use
 		// to create its own windows.
-		m_pDirect2dFactory->GetDesktopDpi(&dpiX, &dpiY);
+		direct2dFactory->GetDesktopDpi(&dpiX, &dpiY);
 
 
 		// Create the window.
-		test = new Test();
-
-		m_hwnd = CreateWindow(
+		hwnd = CreateWindow(
 			L"D2DDemoApp",
 			L"Direct2D Demo App",
 			WS_OVERLAPPEDWINDOW,
@@ -53,14 +50,14 @@ HRESULT InitializeWindow()
 			NULL,
 			NULL,
 			HINST_THISCOMPONENT,
-			test
+			(LPVOID)1
 			);
-		hr = m_hwnd ? S_OK : E_FAIL;
+		hr = hwnd ? S_OK : E_FAIL;
 		if (SUCCEEDED(hr))
 		{
-			ShowWindow(m_hwnd, SW_SHOWNORMAL);
+			ShowWindow(hwnd, SW_SHOWNORMAL);
 
-			UpdateWindow(m_hwnd);
+			UpdateWindow(hwnd);
 		}
 	}
 
@@ -68,25 +65,25 @@ HRESULT InitializeWindow()
 }
 
 
-HRESULT CreateDeviceIndependentResources()
+HRESULT PonyGame::CreateDeviceIndependentResources()
 {
 	HRESULT hr = S_OK;
 
 	// Create a Direct2D factory for creating render targets.
-	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pDirect2dFactory);
+	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &direct2dFactory);
 
 	return hr;
 }
 
 
-HRESULT CreateDeviceResources()
+HRESULT PonyGame::CreateDeviceResources()
 {
 	HRESULT hr = S_OK;
 
-	if (!m_pRenderTarget)
+	if (!renderTarget)
 	{
 		RECT rc;
-		GetClientRect(m_hwnd, &rc);
+		GetClientRect(hwnd, &rc);
 
 		D2D1_SIZE_U size = D2D1::SizeU(
 			rc.right - rc.left,
@@ -94,27 +91,27 @@ HRESULT CreateDeviceResources()
 			);
 
 		// Create a Direct2D render target for rendering to the window.
-		hr = m_pDirect2dFactory->CreateHwndRenderTarget(
+		hr = direct2dFactory->CreateHwndRenderTarget(
 			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(m_hwnd, size),
-			&m_pRenderTarget
+			D2D1::HwndRenderTargetProperties(hwnd, size),
+			&renderTarget
 			);
 
 
 		if (SUCCEEDED(hr))
 		{
 			// Create a gray brush.
-			hr = m_pRenderTarget->CreateSolidColorBrush(
+			hr = renderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::LightSlateGray),
-				&m_pLightSlateGrayBrush
+				&lightSlateGrayBrush
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
 			// Create a blue brush.
-			hr = m_pRenderTarget->CreateSolidColorBrush(
+			hr = renderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::CornflowerBlue),
-				&m_pCornflowerBlueBrush
+				&cornflowerBlueBrush
 				);
 		}
 	}
@@ -123,15 +120,15 @@ HRESULT CreateDeviceResources()
 }
 
 
-void DiscardDeviceResources()
+void PonyGame::DiscardDeviceResources()
 {
-	SafeRelease(&m_pRenderTarget);
-	SafeRelease(&m_pLightSlateGrayBrush);
-	SafeRelease(&m_pCornflowerBlueBrush);
+	SafeRelease(&renderTarget);
+	SafeRelease(&lightSlateGrayBrush);
+	SafeRelease(&cornflowerBlueBrush);
 }
 
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
 	LRESULT result = 0;
@@ -213,7 +210,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-HRESULT OnRender()
+HRESULT PonyGame::OnRender()
 {
 	HRESULT hr = S_OK;
 
@@ -222,13 +219,13 @@ HRESULT OnRender()
 
 	if (SUCCEEDED(hr))
 	{
-		m_pRenderTarget->BeginDraw();
+		renderTarget->BeginDraw();
 
-		m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+		renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-		m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+		renderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
-		D2D1_SIZE_F rtSize = m_pRenderTarget->GetSize();
+		D2D1_SIZE_F rtSize = renderTarget->GetSize();
 
 
 		// Draw a grid background.
@@ -237,20 +234,20 @@ HRESULT OnRender()
 
 		for (int x = 0; x < width; x += 10)
 		{
-			m_pRenderTarget->DrawLine(
+			renderTarget->DrawLine(
 				D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
 				D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
-				m_pLightSlateGrayBrush,
+				lightSlateGrayBrush,
 				0.5f
 				);
 		}
 
 		for (int y = 0; y < height; y += 10)
 		{
-			m_pRenderTarget->DrawLine(
+			renderTarget->DrawLine(
 				D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
 				D2D1::Point2F(rtSize.width, static_cast<FLOAT>(y)),
-				m_pLightSlateGrayBrush,
+				lightSlateGrayBrush,
 				0.5f
 				);
 		}
@@ -272,14 +269,14 @@ HRESULT OnRender()
 
 
 		// Draw a filled rectangle.
-		m_pRenderTarget->FillRectangle(&rectangle1, m_pLightSlateGrayBrush);
+		renderTarget->FillRectangle(&rectangle1, lightSlateGrayBrush);
 
 
 		// Draw the outline of a rectangle.
-		m_pRenderTarget->DrawRectangle(&rectangle2, m_pCornflowerBlueBrush);
+		renderTarget->DrawRectangle(&rectangle2, cornflowerBlueBrush);
 
 
-		hr = m_pRenderTarget->EndDraw();
+		hr = renderTarget->EndDraw();
 	}
 
 
@@ -294,30 +291,32 @@ HRESULT OnRender()
 }
 
 
-void OnResize(UINT width, UINT height)
+void PonyGame::OnResize(UINT width, UINT height)
 {
-	if (m_pRenderTarget)
+	if (renderTarget)
 	{
 		// Note: This method can fail, but it's okay to ignore the
 		// error here, because the error will be returned again
 		// the next time EndDraw is called.
-		m_pRenderTarget->Resize(D2D1::SizeU(width, height));
+		renderTarget->Resize(D2D1::SizeU(width, height));
 	}
 }
 
 
 PONYGAMENATIVE_API bool Initialize(void)
 {
+	using namespace PonyGame;
+
 	if (!SUCCEEDED(CoInitialize(NULL)))
 	{
 		return false;
 	}
 
-	m_hwnd = NULL;
-	m_pDirect2dFactory = NULL;
-	m_pRenderTarget = NULL;
-	m_pLightSlateGrayBrush = NULL;
-	m_pCornflowerBlueBrush = NULL;
+	hwnd = NULL;
+	direct2dFactory = NULL;
+	renderTarget = NULL;
+	lightSlateGrayBrush = NULL;
+	cornflowerBlueBrush = NULL;
 
 	return SUCCEEDED(InitializeWindow());
 }
@@ -338,10 +337,12 @@ PONYGAMENATIVE_API bool Render(void)
 
 PONYGAMENATIVE_API void Uninitialize(void)
 {
-	SafeRelease(&m_pDirect2dFactory);
-	SafeRelease(&m_pRenderTarget);
-	SafeRelease(&m_pLightSlateGrayBrush);
-	SafeRelease(&m_pCornflowerBlueBrush);
+	using namespace PonyGame;
+
+	SafeRelease(&direct2dFactory);
+	SafeRelease(&renderTarget);
+	SafeRelease(&lightSlateGrayBrush);
+	SafeRelease(&cornflowerBlueBrush);
 
 	CoUninitialize();
 }
