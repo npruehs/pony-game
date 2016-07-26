@@ -7,3 +7,5 @@ ponyc -p "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64" -p "
 
 ECHO Copying native libs...
 COPY "Bin\PonyGameNative\x64\Debug\PonyGameNative.dll" "Bin\PonyGame"
+
+PAUSE
