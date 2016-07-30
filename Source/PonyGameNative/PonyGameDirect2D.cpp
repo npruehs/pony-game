@@ -71,6 +71,18 @@ HRESULT PonyGame::CreateDeviceIndependentResources()
 	// Create a Direct2D factory for creating render targets.
 	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &direct2dFactory);
 
+	if (!SUCCEEDED(hr))
+	{
+		return hr;
+	}
+
+	// Create a DirectWrite factory for creating text formats.
+	hr = DWriteCreateFactory(
+		DWRITE_FACTORY_TYPE_SHARED,
+		__uuidof(directWriteFactory),
+		reinterpret_cast<IUnknown **>(&directWriteFactory)
+		);
+
 	return hr;
 }
 
@@ -157,7 +169,6 @@ LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARA
 
 			case WM_PAINT:
 			{
-				OnRender();
 				ValidateRect(hwnd, NULL);
 			}
 			result = 0;
@@ -241,15 +252,51 @@ PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const 
 	return SUCCEEDED(InitializeWindow(gameName, width, height));
 }
 
-PONYGAMENATIVE_API void SetClearColor(float red, float green, float blue, float alpha)
+PONYGAMENATIVE_API void SetClearColor(const float red, const float green, const float blue, const float alpha)
 {
 	using namespace PonyGame;
 
 	clearColor = D2D1::ColorF(red, green, blue, alpha);
 }
 
+PONYGAMENATIVE_API int CreateTextFormat(const char* fontName, const float fontSize, const int textAlignment, const int paragraphAlignment)
+{
+	using namespace PonyGame;
+
+	HRESULT hr = S_OK;
+
+	// Create a DirectWrite text format object.
+	IDWriteTextFormat* textFormat;
+
+	hr = directWriteFactory->CreateTextFormat(
+		StringToWString(std::string(fontName)).c_str(),
+		NULL,
+		DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		fontSize,
+		L"",
+		&textFormat
+		);
+
+	if (!SUCCEEDED(hr))
+	{
+		return -1;
+	}
+
+	// Set horizontal and vertical text alignment.
+	textFormat->SetTextAlignment((DWRITE_TEXT_ALIGNMENT)textAlignment);
+	textFormat->SetParagraphAlignment((DWRITE_PARAGRAPH_ALIGNMENT)paragraphAlignment);
+
+	// Cache text format.
+	textFormats.push_back(textFormat);
+	return (int)textFormats.size() - 1;
+}
+
 PONYGAMENATIVE_API bool Render(void)
 {
+	using namespace PonyGame;
+
 	MSG msg;
 
 	if (!GetMessage(&msg, NULL, 0, 0))
@@ -259,7 +306,47 @@ PONYGAMENATIVE_API bool Render(void)
 
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
+
+	OnRender();
+
 	return true;
+}
+
+PONYGAMENATIVE_API void RenderText(const char* text, const float x, const float y, const int textFormatId, const float red, const float green, const float blue, const float alpha)
+{
+	using namespace PonyGame;
+
+	// Create text brush.
+	ID2D1SolidColorBrush* brush;
+	HRESULT hr = renderTarget->CreateSolidColorBrush(
+		D2D1::ColorF(red, green, blue, alpha),
+		&brush
+		);
+
+	if (!SUCCEEDED(hr))
+	{
+		return;
+	}
+
+	renderTarget->BeginDraw();
+	{
+		D2D1_SIZE_F renderTargetSize = renderTarget->GetSize();
+		std::wstring textString = StringToWString(std::string(text));
+
+		// Draw text.
+		renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
+
+		renderTarget->DrawText(
+			textString.c_str(),
+			(int)textString.length(),
+			textFormats[textFormatId],
+			D2D1::RectF(0, 0, renderTargetSize.width, renderTargetSize.height),
+			brush
+			);
+	}
+	renderTarget->EndDraw();
+
+	SafeRelease(&brush);
 }
 
 PONYGAMENATIVE_API void Uninitialize(void)
