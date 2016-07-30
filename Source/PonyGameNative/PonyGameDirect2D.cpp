@@ -61,6 +61,10 @@ HRESULT PonyGame::InitializeWindow(const char* gameName, const int width, const 
 
 	ShowWindow(hwnd, SW_SHOWNORMAL);
 	UpdateWindow(hwnd);
+
+	// Create window render target.
+	CreateDeviceResources();
+
 	return hr;
 }
 
@@ -81,6 +85,20 @@ HRESULT PonyGame::CreateDeviceIndependentResources()
 		DWRITE_FACTORY_TYPE_SHARED,
 		__uuidof(directWriteFactory),
 		reinterpret_cast<IUnknown **>(&directWriteFactory)
+		);
+
+	if (!SUCCEEDED(hr))
+	{
+		return hr;
+	}
+
+	// Create WIC Imaging factory for creating image decoders.
+	hr = CoCreateInstance(
+		CLSID_WICImagingFactory,
+		NULL,
+		CLSCTX_INPROC_SERVER,
+		IID_IWICImagingFactory,
+		(LPVOID*)&imagingFactory
 		);
 
 	return hr;
@@ -293,6 +311,78 @@ PONYGAMENATIVE_API int CreateTextFormat(const char* fontName, const float fontSi
 	return (int)textFormats.size() - 1;
 }
 
+PONYGAMENATIVE_API int LoadImageResource(const char* fileName)
+{
+	using namespace PonyGame;
+
+	IWICBitmapDecoder *decoder = NULL;
+	IWICBitmapFrameDecode *source = NULL;
+	IWICFormatConverter *converter = NULL;
+	ID2D1Bitmap *bitmap = NULL;
+
+	// Create decoder.
+	HRESULT hr = imagingFactory->CreateDecoderFromFilename(
+		StringToWString(std::string(fileName)).c_str(),
+		NULL,
+		GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad,
+		&decoder
+		);
+
+	if (!SUCCEEDED(hr))
+	{
+		printf("Failed to load image: %s", fileName);
+		return -1;
+	}
+
+	// Create the initial frame.
+	hr = decoder->GetFrame(0, &source);
+
+	if (!SUCCEEDED(hr))
+	{
+		return -1;
+	}
+
+	// Convert the image format to 32bppPBGRA
+	// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
+	hr = imagingFactory->CreateFormatConverter(&converter);
+
+	if (!SUCCEEDED(hr))
+	{
+		printf("Invalid image format: %s", fileName);
+		return -1;
+	}
+
+	hr = converter->Initialize(
+		source,
+		GUID_WICPixelFormat32bppPBGRA,
+		WICBitmapDitherTypeNone,
+		NULL,
+		0.0f,
+		WICBitmapPaletteTypeMedianCut
+		);
+
+	if (!SUCCEEDED(hr))
+	{
+		return -1;
+	}
+
+	// Create a Direct2D bitmap from the WIC bitmap.
+	hr = renderTarget->CreateBitmapFromWicBitmap(
+		converter,
+		NULL,
+		&bitmap
+		);
+
+	SafeRelease(&decoder);
+	SafeRelease(&source);
+	SafeRelease(&converter);
+
+	// Cache image.
+	images.push_back(bitmap);
+	return (int)images.size() - 1;
+}
+
 PONYGAMENATIVE_API bool Render(void)
 {
 	using namespace PonyGame;
@@ -347,6 +437,33 @@ PONYGAMENATIVE_API void RenderText(const char* text, const float x, const float 
 	renderTarget->EndDraw();
 
 	SafeRelease(&brush);
+}
+
+PONYGAMENATIVE_API void RenderImage(const int imageId, const float x, const float y)
+{
+	using namespace PonyGame;
+
+	renderTarget->BeginDraw();
+	{
+		// Get image to draw.
+		ID2D1Bitmap* bitmap = images[imageId];
+
+		// Retrieve the size of the image.
+		D2D1_SIZE_F size = bitmap->GetSize();
+
+		// Draw image.
+		renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
+
+		renderTarget->DrawBitmap(
+			bitmap,
+			D2D1::RectF(
+				0,
+				0,
+				size.width,
+				size.height)
+			);
+	}
+	renderTarget->EndDraw();
 }
 
 PONYGAMENATIVE_API void Uninitialize(void)

@@ -51,6 +51,12 @@ namespace PonyGame
 
 	// Available text formats for rendering text.
 	std::vector<IDWriteTextFormat*> textFormats;
+
+	// WIC Imaging factory for creating image decoders.
+	IWICImagingFactory *imagingFactory;
+
+	// Loaded image resources.
+	std::vector<ID2D1Bitmap*> images;
 }
 
 
@@ -59,7 +65,9 @@ extern "C"
 	PONYGAMENATIVE_API bool Initialize(const char* gameName, const int width, const int height);
 	PONYGAMENATIVE_API void SetClearColor(const float red, const float green, const float blue, const float alpha);
 	PONYGAMENATIVE_API int CreateTextFormat(const char* fontName, const float fontSize, const int textAlignment, const int paragraphAlignment);
+	PONYGAMENATIVE_API int LoadImageResource(const char* fileName);
 	PONYGAMENATIVE_API bool Render(void);
 	PONYGAMENATIVE_API void RenderText(const char* text, const float x, const float y, const int textFormatId, const float red, const float green, const float blue, const float alpha);
+	PONYGAMENATIVE_API void RenderImage(const int imageId, const float x, const float y);
 	PONYGAMENATIVE_API void Uninitialize(void);
 }
