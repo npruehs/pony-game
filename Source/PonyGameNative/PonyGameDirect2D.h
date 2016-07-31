@@ -17,9 +17,6 @@ namespace PonyGame
 	// Release device-dependent resource.
 	void DiscardDeviceResources();
 
-	// Draw content.
-	HRESULT OnRender();
-
 	// Resize the render target.
 	void OnResize(
 		UINT width,
@@ -66,7 +63,8 @@ extern "C"
 	PONYGAMENATIVE_API void SetClearColor(const float red, const float green, const float blue, const float alpha);
 	PONYGAMENATIVE_API int CreateTextFormat(const char* fontName, const float fontSize, const int textAlignment, const int paragraphAlignment);
 	PONYGAMENATIVE_API int LoadImageResource(const char* fileName);
-	PONYGAMENATIVE_API bool Render(void);
+	PONYGAMENATIVE_API bool BeginDraw(void);
+	PONYGAMENATIVE_API bool EndDraw(void);
 	PONYGAMENATIVE_API void RenderText(const char* text, const float x, const float y, const int textFormatId, const float red, const float green, const float blue, const float alpha);
 	PONYGAMENATIVE_API void RenderImage(const int imageId, const float x, const float y);
 	PONYGAMENATIVE_API void Uninitialize(void);

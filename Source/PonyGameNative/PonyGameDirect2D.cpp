@@ -212,33 +212,6 @@ LRESULT CALLBACK PonyGame::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARA
 	return result;
 }
 
-HRESULT PonyGame::OnRender()
-{
-	HRESULT hr = S_OK;
-
-	hr = CreateDeviceResources();
-
-	if (!SUCCEEDED(hr))
-	{
-		return hr;
-	}
-
-	renderTarget->BeginDraw();
-	{
-		renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-		renderTarget->Clear(clearColor);
-	}
-	hr = renderTarget->EndDraw();
-
-	if (hr == D2DERR_RECREATE_TARGET)
-	{
-		hr = S_OK;
-		DiscardDeviceResources();
-	}
-
-	return hr;
-}
-
 void PonyGame::OnResize(UINT width, UINT height)
 {
 	if (!renderTarget)
@@ -383,9 +356,12 @@ PONYGAMENATIVE_API int LoadImageResource(const char* fileName)
 	return (int)images.size() - 1;
 }
 
-PONYGAMENATIVE_API bool Render(void)
+PONYGAMENATIVE_API bool BeginDraw(void)
 {
 	using namespace PonyGame;
+
+	// Force window update.
+	InvalidateRect(hwnd, NULL, FALSE);
 
 	MSG msg;
 
@@ -397,9 +373,33 @@ PONYGAMENATIVE_API bool Render(void)
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
 
-	OnRender();
+	HRESULT hr = CreateDeviceResources();
+
+	if (!SUCCEEDED(hr))
+	{
+		return false;
+	}
+
+	renderTarget->BeginDraw();
+	renderTarget->Clear(clearColor);
+	renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
 	return true;
+}
+
+PONYGAMENATIVE_API bool EndDraw()
+{
+	using namespace PonyGame;
+
+	HRESULT hr = renderTarget->EndDraw();
+
+	if (hr == D2DERR_RECREATE_TARGET)
+	{
+		hr = S_OK;
+		DiscardDeviceResources();
+	}
+
+	return SUCCEEDED(hr);
 }
 
 PONYGAMENATIVE_API void RenderText(const char* text, const float x, const float y, const int textFormatId, const float red, const float green, const float blue, const float alpha)
@@ -418,23 +418,19 @@ PONYGAMENATIVE_API void RenderText(const char* text, const float x, const float 
 		return;
 	}
 
-	renderTarget->BeginDraw();
-	{
-		D2D1_SIZE_F renderTargetSize = renderTarget->GetSize();
-		std::wstring textString = StringToWString(std::string(text));
+	D2D1_SIZE_F renderTargetSize = renderTarget->GetSize();
+	std::wstring textString = StringToWString(std::string(text));
 
-		// Draw text.
-		renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
+	// Draw text.
+	renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
 
-		renderTarget->DrawText(
-			textString.c_str(),
-			(int)textString.length(),
-			textFormats[textFormatId],
-			D2D1::RectF(0, 0, renderTargetSize.width, renderTargetSize.height),
-			brush
-			);
-	}
-	renderTarget->EndDraw();
+	renderTarget->DrawText(
+		textString.c_str(),
+		(int)textString.length(),
+		textFormats[textFormatId],
+		D2D1::RectF(0, 0, renderTargetSize.width, renderTargetSize.height),
+		brush
+		);
 
 	SafeRelease(&brush);
 }
@@ -443,27 +439,23 @@ PONYGAMENATIVE_API void RenderImage(const int imageId, const float x, const floa
 {
 	using namespace PonyGame;
 
-	renderTarget->BeginDraw();
-	{
-		// Get image to draw.
-		ID2D1Bitmap* bitmap = images[imageId];
+	// Get image to draw.
+	ID2D1Bitmap* bitmap = images[imageId];
 
-		// Retrieve the size of the image.
-		D2D1_SIZE_F size = bitmap->GetSize();
+	// Retrieve the size of the image.
+	D2D1_SIZE_F size = bitmap->GetSize();
 
-		// Draw image.
-		renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
+	// Draw image.
+	renderTarget->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
 
-		renderTarget->DrawBitmap(
-			bitmap,
-			D2D1::RectF(
-				0,
-				0,
-				size.width,
-				size.height)
-			);
-	}
-	renderTarget->EndDraw();
+	renderTarget->DrawBitmap(
+		bitmap,
+		D2D1::RectF(
+			0,
+			0,
+			size.width,
+			size.height)
+		);
 }
 
 PONYGAMENATIVE_API void Uninitialize(void)
