@@ -140,3 +140,12 @@ PONYGAMENATIVE_API float GetRightThumbY(const int userIndex)
 		? state.Gamepad.sThumbRY / 32767.0f
 		: 0.0f;
 }
+
+PONYGAMENATIVE_API void SetVibration(const int userIndex, const float leftMotorSpeed, const float rightMotorSpeed)
+{
+	XINPUT_VIBRATION vibration;
+	ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+	vibration.wLeftMotorSpeed = (WORD)(leftMotorSpeed * 65535);
+	vibration.wRightMotorSpeed = (WORD)(rightMotorSpeed * 65535);
+	XInputSetState(userIndex, &vibration);
+}

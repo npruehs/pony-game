@@ -30,6 +30,8 @@ use @GetLeftThumbY[F32](user_index: I32)
 use @GetRightThumbX[F32](user_index: I32)
 use @GetRightThumbY[F32](user_index: I32)
 
+use @SetVibration[None](user_index: I32, left_motor_speed: F32, right_motor_speed: F32)
+
 use @RenderText[None](text: Pointer[U8] tag, x: F32, y: F32, text_format_id: I32, red: F32, green: F32, blue: F32, alpha: F32)
 use @RenderImage[None](image_id: I32, x: F32, y: F32)
 

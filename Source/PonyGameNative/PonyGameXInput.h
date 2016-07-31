@@ -33,4 +33,6 @@ extern "C"
 	PONYGAMENATIVE_API float GetLeftThumbY(const int userIndex);
 	PONYGAMENATIVE_API float GetRightThumbX(const int userIndex);
 	PONYGAMENATIVE_API float GetRightThumbY(const int userIndex);
+
+	PONYGAMENATIVE_API void SetVibration(const int userIndex, const float leftMotorSpeed, const float rightMotorSpeed);
 }
