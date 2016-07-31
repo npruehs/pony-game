@@ -30,6 +30,9 @@
     <ClInclude Include="..\Source\PonyGameNative\PonyGameString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\PonyGameNative\PonyGameXInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../Source/PonygameNative/stdafx.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\PonygameNative\PonyGameDirect2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\PonyGameNative\PonyGameXInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
