@@ -80,3 +80,63 @@ PONYGAMENATIVE_API bool ButtonYPressed(const int userIndex)
 {
 	return PonyGame::ButtonPressed(userIndex, XINPUT_GAMEPAD_Y);
 }
+
+PONYGAMENATIVE_API float GetLeftTrigger(const int userIndex)
+{
+	XINPUT_STATE state;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	DWORD dwResult = XInputGetState(userIndex, &state);
+	return dwResult == ERROR_SUCCESS && state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD
+		? state.Gamepad.bLeftTrigger / 256.0f
+		: 0.0f;
+}
+
+PONYGAMENATIVE_API float GetRightTrigger(const int userIndex)
+{
+	XINPUT_STATE state;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	DWORD dwResult = XInputGetState(userIndex, &state);
+	return dwResult == ERROR_SUCCESS && state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD
+		? state.Gamepad.bRightTrigger / 256.0f
+		: 0.0f;
+}
+
+PONYGAMENATIVE_API float GetLeftThumbX(const int userIndex)
+{
+	XINPUT_STATE state;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	DWORD dwResult = XInputGetState(userIndex, &state);
+	return dwResult == ERROR_SUCCESS && abs(state.Gamepad.sThumbLX) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
+		? state.Gamepad.sThumbLX / 32767.0f
+		: 0.0f;
+}
+
+PONYGAMENATIVE_API float GetLeftThumbY(const int userIndex)
+{
+	XINPUT_STATE state;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	DWORD dwResult = XInputGetState(userIndex, &state);
+	return dwResult == ERROR_SUCCESS && abs(state.Gamepad.sThumbLY) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
+		? state.Gamepad.sThumbLY / 32767.0f
+		: 0.0f;
+}
+
+PONYGAMENATIVE_API float GetRightThumbX(const int userIndex)
+{
+	XINPUT_STATE state;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	DWORD dwResult = XInputGetState(userIndex, &state);
+	return dwResult == ERROR_SUCCESS && abs(state.Gamepad.sThumbRX) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE
+		? state.Gamepad.sThumbRX / 32767.0f
+		: 0.0f;
+}
+
+PONYGAMENATIVE_API float GetRightThumbY(const int userIndex)
+{
+	XINPUT_STATE state;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
+	DWORD dwResult = XInputGetState(userIndex, &state);
+	return dwResult == ERROR_SUCCESS && abs(state.Gamepad.sThumbRY) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE
+		? state.Gamepad.sThumbRY / 32767.0f
+		: 0.0f;
+}

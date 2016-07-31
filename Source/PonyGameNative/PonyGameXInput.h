@@ -26,4 +26,11 @@ extern "C"
 	PONYGAMENATIVE_API bool ButtonBPressed(const int userIndex);
 	PONYGAMENATIVE_API bool ButtonXPressed(const int userIndex);
 	PONYGAMENATIVE_API bool ButtonYPressed(const int userIndex);
+
+	PONYGAMENATIVE_API float GetLeftTrigger(const int userIndex);
+	PONYGAMENATIVE_API float GetRightTrigger(const int userIndex);
+	PONYGAMENATIVE_API float GetLeftThumbX(const int userIndex);
+	PONYGAMENATIVE_API float GetLeftThumbY(const int userIndex);
+	PONYGAMENATIVE_API float GetRightThumbX(const int userIndex);
+	PONYGAMENATIVE_API float GetRightThumbY(const int userIndex);
 }
