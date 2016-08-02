@@ -1,5 +1,7 @@
 use "lib:PonyGameNative"
 
+use "ponygame"
+
 use @Initialize[Bool](game_name: Pointer[U8] tag, width: I32, height: I32)
 use @SetClearColor[None](red: F32, green: F32, blue: F32, alpha: F32)
 use @CreateTextFormat[I32](font_name: Pointer[U8] tag, fontSize: F32, textAlignment: I32, paragraphAlignment: I32)
@@ -39,7 +41,8 @@ use @Uninitialize[None]()
 
 actor Main
   new create(env: Env) =>
-    env.out.print("Initializing...")
+    let game = Game(env)
+    game.init()
     
     var frame: U64 = 1
     var game_name': String = "TestGame"
