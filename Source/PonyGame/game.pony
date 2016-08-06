@@ -16,7 +16,7 @@ class Game
     
   fun ref init(): Bool =>
     // Read config.
-    _config.parse("PonyGameConfig.ini")
+    _config.parse("ponygame.ini")
     
     // Get log level.
     var log_level: LogLevel = Fine
@@ -28,6 +28,8 @@ class Game
       log_level = Warn
     elseif config_log_level == "Error" then
       log_level = Error
+    else
+      config_log_level = "Fine"
     end
     
     // Initialize logger.

@@ -9,6 +9,8 @@ ECHO Copying native libs...
 COPY "Bin\PonyGameNative\x64\Debug\PonyGameNative.dll" "Bin\PonyGameExample"
 
 ECHO Copying resources...
+COPY "Source\PonyGame\*.ini" "Bin\PonyGameExample"
 COPY "Source\PonyGameExample\*.png" "Bin\PonyGameExample"
+COPY "Source\PonyGameExample\*.ini" "Bin\PonyGameExample"
 
 PAUSE
