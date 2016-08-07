@@ -1,9 +1,9 @@
 use "time"
 
-class GameClock
+class val GameClock
   let _start_time: U64
   
-  new create() =>
+  new val create() =>
     let time = Time
     _start_time = time.wall_to_nanos(time.now())
     
