@@ -9,7 +9,8 @@ class Game
   var _config: GameConfig
   var _logger: Logger[String]
   var _fps_counter: FpsCounter
-
+  var _frame: U64
+  
   new create(env: Env) =>
     _env = env
     
@@ -17,6 +18,7 @@ class Game
     _logger = StringLogger(Fine, env.out)
     _clock = GameClock
     _fps_counter = FpsCounter(_clock)
+    _frame = 0
     
   fun ref init(): Bool =>
     // Read config.
@@ -53,6 +55,10 @@ class Game
     
     _logger.log("Log Level: " + config_log_level)
 
+  fun ref tick(): Bool =>
+    _frame = _frame + 1
+    _update() and _draw()
+    
   fun config(): this->GameConfig =>
     _config
     
@@ -64,3 +70,12 @@ class Game
     
   fun fps_counter(): this->FpsCounter => 
     _fps_counter
+    
+  fun frame(): U64 =>
+    _frame
+    
+  fun _update(): Bool =>
+    true
+    
+  fun _draw(): Bool =>
+    true

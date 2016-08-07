@@ -44,7 +44,6 @@ actor Main
     let game = Game(env)
     game.init()
     
-    var frame: U64 = 1
     var game_name': String = "TestGame"
     
     // Initialize window.
@@ -141,13 +140,13 @@ actor Main
           @RenderText(frame_time_string.cstring(), 10.0, 50.0, small_text_format_id, 1.0, 1.0, 1.0, 1.0)
           
           // Show moving text. 
-          @RenderText("Hello world!".cstring(), F32.from[U64](frame % 1024), 150.0, big_text_format_id, 1.0, 1.0, 1.0, 1.0)
+          @RenderText("Hello world!".cstring(), F32.from[U64](game.frame() % 1024), 150.0, big_text_format_id, 1.0, 1.0, 1.0, 1.0)
           
           // Show pony.
           @RenderImage(image_id', imageX, imageY)
           
           // Tick game.
-          frame = frame + 1
+          game.tick()
           game.fps_counter().add_tick()
           
           renderSuccess = @EndDraw()
