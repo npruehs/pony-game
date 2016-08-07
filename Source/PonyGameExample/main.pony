@@ -52,13 +52,14 @@ actor Main
       @SetClearColor(0.0, 0.0, 0.0, 1.0)
       
       var font_name': String = "Verdana"
-      var text_format_id': I32 = @CreateTextFormat(font_name'.cstring(), 50, 0, 0)
+      var big_text_format_id: I32 = @CreateTextFormat(font_name'.cstring(), 32, 0, 0)
+      var small_text_format_id: I32 = @CreateTextFormat(font_name'.cstring(), 16, 0, 0)
       var image_id': I32 = @LoadImageResource("pony.png".cstring())
       
       var renderSuccess: Bool = true
       
       var imageX: F32 = 100.0
-      var imageY: F32 = 200.0
+      var imageY: F32 = 300.0
       
       while renderSuccess do
         // Handle input.
@@ -124,9 +125,30 @@ actor Main
         renderSuccess = @BeginDraw()
         
         if renderSuccess then
-          @RenderText("Hello world!".cstring(), F32.from[U64](frame % 1024), 100.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
+          
+          // Show elapsed time.
+          let elapsed_millis = game.clock().elapsed_millis()
+          let elapsed_seconds = elapsed_millis / 1000
+          let time_string = "Time: " + elapsed_seconds.string() + "." + (elapsed_millis % 1000).string()
+          
+          @RenderText(time_string.cstring(), 10.0, 10.0, small_text_format_id, 1.0, 1.0, 1.0, 1.0)
+          
+          // Show FPS.
+          let fps_string = "FPS: " + game.fps_counter().fps().string()
+          @RenderText(fps_string.cstring(), 10.0, 30.0, small_text_format_id, 1.0, 1.0, 1.0, 1.0)
+          
+          let frame_time_string = "Frame Time: " + game.fps_counter().frame_time().string() + " ms"
+          @RenderText(frame_time_string.cstring(), 10.0, 50.0, small_text_format_id, 1.0, 1.0, 1.0, 1.0)
+          
+          // Show moving text. 
+          @RenderText("Hello world!".cstring(), F32.from[U64](frame % 1024), 150.0, big_text_format_id, 1.0, 1.0, 1.0, 1.0)
+          
+          // Show pony.
           @RenderImage(image_id', imageX, imageY)
+          
+          // Tick game.
           frame = frame + 1
+          game.fps_counter().add_tick()
           
           renderSuccess = @EndDraw()
         end        
