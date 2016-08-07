@@ -4,11 +4,12 @@ use "logger"
 class Game
   let _env: Env
   
+  let _clock: GameClock val
+  
   var _config: GameConfig
   var _logger: Logger[String]
-  var _clock: GameClock
   var _fps_counter: FpsCounter
-  
+
   new create(env: Env) =>
     _env = env
     
