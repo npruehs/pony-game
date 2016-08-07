@@ -11,6 +11,7 @@ class Game
   var _fps_counter: FpsCounter
   var _frame: U64
   var _renderer: Renderer
+  var _resource_manager: ResourceManager
   
   new create(env: Env) =>
     _env = env
@@ -21,6 +22,7 @@ class Game
     _fps_counter = FpsCounter(_clock)
     _frame = 0
     _renderer = Renderer
+    _resource_manager = ResourceManager
     
   fun ref init(): Bool =>
     // Read config.
@@ -101,6 +103,9 @@ class Game
     
   fun fps_counter(): this->FpsCounter => 
     _fps_counter
+    
+  fun resource_manager(): this->ResourceManager =>
+    _resource_manager
     
   fun frame(): U64 =>
     _frame

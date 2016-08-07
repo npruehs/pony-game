@@ -2,9 +2,6 @@ use "lib:PonyGameNative"
 
 use "ponygame"
 
-use @CreateTextFormat[I32](font_name: Pointer[U8] tag, fontSize: F32, textAlignment: I32, paragraphAlignment: I32)
-use @LoadImageResource[I32](file_name: Pointer[U8] tag)
-
 use @BeginDraw[Bool]()
 use @EndDraw[Bool]()
 
@@ -43,10 +40,9 @@ actor Main
 
     // Initialize window.
     if game.init() then
-      var font_name': String = "Verdana"
-      var big_text_format_id: I32 = @CreateTextFormat(font_name'.cstring(), 32, 0, 0)
-      var small_text_format_id: I32 = @CreateTextFormat(font_name'.cstring(), 16, 0, 0)
-      var image_id': I32 = @LoadImageResource("pony.png".cstring())
+      var big_text_format_id = game.resource_manager().get_text_format("Verdana", 32, HorizontalAlignmentLeft, VerticalAlignmentLeft)
+      var small_text_format_id = game.resource_manager().get_text_format("Verdana", 16, HorizontalAlignmentLeft, VerticalAlignmentLeft)
+      var image_id' = game.resource_manager().get_image("pony.png")
       
       var renderSuccess: Bool = true
       
