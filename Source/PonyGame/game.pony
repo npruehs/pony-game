@@ -6,6 +6,7 @@ class Game
   var _config: GameConfig
   var _logger: Logger[String]
   var _clock: GameClock
+  var _fps_counter: FpsCounter
   
   new create(env: Env) =>
     _env = env
@@ -13,6 +14,7 @@ class Game
     _config = GameConfig(env)
     _logger = StringLogger(Fine, env.out)
     _clock = GameClock
+    _fps_counter = FpsCounter(_clock)
     
   fun ref init(): Bool =>
     // Read config.
@@ -44,3 +46,6 @@ class Game
     
   fun clock(): this->GameClock =>
     _clock
+    
+  fun fps_counter(): this->FpsCounter => 
+    _fps_counter

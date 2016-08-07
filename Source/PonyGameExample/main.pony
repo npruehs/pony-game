@@ -126,10 +126,14 @@ actor Main
         if renderSuccess then
                     
           @RenderText(("Time: " + game.clock().elapsed_millis().string()).cstring(), 100.0, 50.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
+          @RenderText(("FPS: " + game.fps_counter().fps().string()).cstring(), 100.0, 100.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
+          
           @RenderText("Hello world!".cstring(), F32.from[U64](frame % 1024), 150.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
           
           @RenderImage(image_id', imageX, imageY)
+          
           frame = frame + 1
+          game.fps_counter().add_tick()
           
           renderSuccess = @EndDraw()
         end        
