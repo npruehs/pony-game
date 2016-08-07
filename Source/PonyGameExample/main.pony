@@ -2,8 +2,6 @@ use "lib:PonyGameNative"
 
 use "ponygame"
 
-use @Initialize[Bool](game_name: Pointer[U8] tag, width: I32, height: I32)
-use @SetClearColor[None](red: F32, green: F32, blue: F32, alpha: F32)
 use @CreateTextFormat[I32](font_name: Pointer[U8] tag, fontSize: F32, textAlignment: I32, paragraphAlignment: I32)
 use @LoadImageResource[I32](file_name: Pointer[U8] tag)
 
@@ -42,14 +40,9 @@ use @Uninitialize[None]()
 actor Main
   new create(env: Env) =>
     let game = Game(env)
-    game.init()
-    
-    var game_name': String = "TestGame"
-    
+
     // Initialize window.
-    if @Initialize(game_name'.cstring(), 1024, 768) then
-      @SetClearColor(0.0, 0.0, 0.0, 1.0)
-      
+    if game.init() then
       var font_name': String = "Verdana"
       var big_text_format_id: I32 = @CreateTextFormat(font_name'.cstring(), 32, 0, 0)
       var small_text_format_id: I32 = @CreateTextFormat(font_name'.cstring(), 16, 0, 0)

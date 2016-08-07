@@ -10,6 +10,7 @@ class Game
   var _logger: Logger[String]
   var _fps_counter: FpsCounter
   var _frame: U64
+  var _renderer: Renderer
   
   new create(env: Env) =>
     _env = env
@@ -19,6 +20,7 @@ class Game
     _clock = GameClock
     _fps_counter = FpsCounter(_clock)
     _frame = 0
+    _renderer = Renderer
     
   fun ref init(): Bool =>
     // Read config.
@@ -55,6 +57,35 @@ class Game
     
     _logger.log("Log Level: " + config_log_level)
 
+    // Initialize renderer.
+    var game_name: String = "PonyGame"
+    var window_width: I32 = 1024 
+    var window_height: I32 = 768 
+    
+    var config_game_name = _config("GameName")
+      
+    if config_game_name != "" then
+      game_name = config_game_name
+    end
+    
+    try
+      var config_window_width = _config("WindowWidth").i32()
+      
+      if config_window_width > 0 then
+        window_width = config_window_width
+      end
+    end
+    
+    try
+      var config_window_height = _config("WindowHeight").i32()
+      
+      if config_window_height > 0 then
+        window_height = config_window_height
+      end
+    end
+    
+    _renderer.init(game_name, window_width, window_height)
+    
   fun ref tick(): Bool =>
     _frame = _frame + 1
     _update() and _draw()
