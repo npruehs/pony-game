@@ -5,14 +5,14 @@ class Game
   
   var _config: GameConfig
   var _logger: Logger[String]
-  
+  var _clock: GameClock
   
   new create(env: Env) =>
     _env = env
     
     _config = GameConfig(env)
     _logger = StringLogger(Fine, env.out)
-    
+    _clock = GameClock
     
   fun ref init(): Bool =>
     // Read config.
@@ -35,3 +35,12 @@ class Game
     // Initialize logger.
     _logger = StringLogger(log_level, _env.out)
     _logger.log("Log Level: " + config_log_level)
+    
+  fun config(): this->GameConfig =>
+    _config
+    
+  fun logger(): this->Logger[String] =>
+    _logger
+    
+  fun clock(): this->GameClock =>
+    _clock

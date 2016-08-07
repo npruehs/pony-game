@@ -58,7 +58,7 @@ actor Main
       var renderSuccess: Bool = true
       
       var imageX: F32 = 100.0
-      var imageY: F32 = 200.0
+      var imageY: F32 = 300.0
       
       while renderSuccess do
         // Handle input.
@@ -124,7 +124,10 @@ actor Main
         renderSuccess = @BeginDraw()
         
         if renderSuccess then
-          @RenderText("Hello world!".cstring(), F32.from[U64](frame % 1024), 100.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
+                    
+          @RenderText(("Time: " + game.clock().elapsed_millis().string()).cstring(), 100.0, 50.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
+          @RenderText("Hello world!".cstring(), F32.from[U64](frame % 1024), 150.0, text_format_id', 1.0, 1.0, 1.0, 1.0)
+          
           @RenderImage(image_id', imageX, imageY)
           frame = frame + 1
           
