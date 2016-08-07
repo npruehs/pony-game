@@ -1,3 +1,4 @@
+use "files"
 use "logger"
 
 class Game
@@ -35,9 +36,20 @@ class Game
     end
     
     // Initialize logger.
-    _logger = StringLogger(log_level, _env.out)
-    _logger.log("Log Level: " + config_log_level)
-    
+    try
+      // Create log file.
+      let file_path = FilePath(_env.root as AmbientAuth, "ponygame.log")
+      let file = recover File(file_path) end
+      let file_stream = FileStream(consume file)
+
+      _logger = StringLogger(log_level, file_stream)
+    else
+      // Write log to console.
+      _env.out.print("Unable to open log file, logging to terminal.")
+       _logger = StringLogger(log_level, _env.out)
+    end
+      _logger.log("Log Level: " + config_log_level)
+          
   fun config(): this->GameConfig =>
     _config
     
