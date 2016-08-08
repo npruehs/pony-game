@@ -1,3 +1,4 @@
+use "collections"
 use "files"
 use "logger"
 
@@ -9,7 +10,14 @@ class Game
   var _config: GameConfig
   var _logger: Logger[String]
   var _fps_counter: FpsCounter
-
+  var _frame: U64
+  var _renderer: Renderer
+  var _resource_manager: ResourceManager
+  var _input: Input
+  
+  var _systems: List[GameSystem]
+  
+  
   new create(env: Env) =>
     _env = env
     
@@ -17,6 +25,13 @@ class Game
     _logger = StringLogger(Fine, env.out)
     _clock = GameClock
     _fps_counter = FpsCounter(_clock)
+    _frame = 0
+    _renderer = Renderer
+    _resource_manager = ResourceManager
+    _input = Input
+    
+    _systems = List[GameSystem]
+    
     
   fun ref init(): Bool =>
     // Read config.
@@ -53,6 +68,67 @@ class Game
     
     _logger.log("Log Level: " + config_log_level)
 
+    // Initialize renderer.
+    var game_name: String = "PonyGame"
+    var window_width: I32 = 1024 
+    var window_height: I32 = 768 
+    
+    var config_game_name = _config("GameName")
+      
+    if config_game_name != "" then
+      game_name = config_game_name
+    end
+    
+    try
+      var config_window_width = _config("WindowWidth").i32()
+      
+      if config_window_width > 0 then
+        window_width = config_window_width
+      end
+    end
+    
+    try
+      var config_window_height = _config("WindowHeight").i32()
+      
+      if config_window_height > 0 then
+        window_height = config_window_height
+      end
+    end
+    
+    if not _renderer.init(game_name, window_width, window_height) then
+      false
+    end
+    
+    // Initialize all systems.
+    for system in _systems.values() do
+      if not system.init() then
+        false
+      end
+    end 
+    
+    true
+    
+  fun ref add_system(system: GameSystem): None =>
+    _systems.push(system)
+    
+  fun ref tick(): Bool =>
+    _frame = _frame + 1
+    _fps_counter.tick()
+    
+    var success: Bool = _update()
+    
+    if success then
+      success = _draw()
+    end
+    
+    if success then
+      _input.tick()
+      true
+    else
+      _shutdown()
+      false
+    end
+     
   fun config(): this->GameConfig =>
     _config
     
@@ -64,3 +140,38 @@ class Game
     
   fun fps_counter(): this->FpsCounter => 
     _fps_counter
+    
+  fun resource_manager(): this->ResourceManager =>
+    _resource_manager
+  
+  fun renderer(): this->Renderer =>
+    _renderer
+  
+  fun input(): this->Input =>
+    _input
+    
+  fun frame(): U64 =>
+    _frame
+    
+    
+  fun ref _update(): Bool =>
+    for system in _systems.values() do
+      system.update()
+    end 
+
+    true
+    
+  fun ref _draw(): Bool =>
+    var success: Bool = _renderer.begin_draw()
+    if success then
+      for system in _systems.values() do
+        system.draw()
+      end
+      
+      success = _renderer.end_draw()
+    end        
+        
+    success
+    
+  fun _shutdown(): None =>
+     _renderer.shutdown()

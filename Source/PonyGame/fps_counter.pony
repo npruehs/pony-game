@@ -19,7 +19,7 @@ class FpsCounter
     _last_tick_time = 0
     
     
-  fun ref add_tick(): U64 =>
+  fun ref tick(): U64 =>
     // Compute elapsed tick time.
     let time: U64 = _clock.elapsed_millis()
     let tick_time: U64 = time - _last_tick_time
