@@ -1,3 +1,4 @@
+use "collections"
 use "files"
 use "logger"
 
@@ -12,6 +13,10 @@ class Game
   var _frame: U64
   var _renderer: Renderer
   var _resource_manager: ResourceManager
+  var _input: Input
+  
+  var _systems: List[GameSystem]
+  
   
   new create(env: Env) =>
     _env = env
@@ -23,6 +28,10 @@ class Game
     _frame = 0
     _renderer = Renderer
     _resource_manager = ResourceManager
+    _input = Input
+    
+    _systems = List[GameSystem]
+    
     
   fun ref init(): Bool =>
     // Read config.
@@ -86,12 +95,40 @@ class Game
       end
     end
     
-    _renderer.init(game_name, window_width, window_height)
+    if not _renderer.init(game_name, window_width, window_height) then
+      false
+    end
+    
+    // Initialize all systems.
+    for system in _systems.values() do
+      if not system.init() then
+        false
+      end
+    end 
+    
+    true
+    
+  fun ref add_system(system: GameSystem): None =>
+    _systems.push(system)
     
   fun ref tick(): Bool =>
     _frame = _frame + 1
-    _update() and _draw()
+    _fps_counter.tick()
     
+    var success: Bool = _update()
+    
+    if success then
+      success = _draw()
+    end
+    
+    if success then
+      _input.tick()
+      true
+    else
+      _shutdown()
+      false
+    end
+     
   fun config(): this->GameConfig =>
     _config
     
@@ -106,12 +143,35 @@ class Game
     
   fun resource_manager(): this->ResourceManager =>
     _resource_manager
+  
+  fun renderer(): this->Renderer =>
+    _renderer
+  
+  fun input(): this->Input =>
+    _input
     
   fun frame(): U64 =>
     _frame
     
-  fun _update(): Bool =>
+    
+  fun ref _update(): Bool =>
+    for system in _systems.values() do
+      system.update()
+    end 
+
     true
     
-  fun _draw(): Bool =>
-    true
+  fun ref _draw(): Bool =>
+    var success: Bool = _renderer.begin_draw()
+    if success then
+      for system in _systems.values() do
+        system.draw()
+      end
+      
+      success = _renderer.end_draw()
+    end        
+        
+    success
+    
+  fun _shutdown(): None =>
+     _renderer.shutdown()
