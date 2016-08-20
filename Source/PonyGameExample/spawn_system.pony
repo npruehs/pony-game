@@ -33,6 +33,9 @@ class SpawnSystem is GameSystem
     let position_component = PositionComponent(5, 0)
     _game.entity_manager().add_component(entity, position_component)
 
+    let fall_component = FallComponent
+    _game.entity_manager().add_component(entity, fall_component)
+    
     // Notify listeners.
     let block_spawned_event = BlockSpawnedEvent(entity)
     _game.event_manager().push(block_spawned_event)
