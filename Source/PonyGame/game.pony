@@ -178,10 +178,17 @@ class Game
       _running = true
     end
 
+    // Update all systems.
     for system in _systems.values() do
       system.update()
     end 
 
+    // Handle events.
+    _event_manager.process()
+
+    // Clean up entities.
+    _entity_manager.cleanup()
+    
     true
     
   fun ref _draw(): Bool =>
