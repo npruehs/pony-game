@@ -7,18 +7,16 @@ actor Main
     let game = Game(env)
 
     // Create systems.
-    var character_system = CharacterSystem(game)
     var hud_system = HudSystem(game)
     var spawn_system = SpawnSystem(game)
     var block_render_system = BlockRenderSystem(game)
     var fall_system = FallSystem(game)
 
-    game.add_system(character_system)
     game.add_system(hud_system)
     game.add_system(spawn_system)
     game.add_system(block_render_system)
     game.add_system(fall_system)
-    
+
     // Initialize game.
     if game.init() then
       var running: Bool = true
