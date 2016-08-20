@@ -46,11 +46,36 @@ class GridSystem is GameSystem
       let position_component = _game.entity_manager().get_component[PositionComponent](block, "PositionComponent")
       let grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
 
-      if position_component.y >= I32.from[USize](grid_component.height()) then
-        _game.logger().log("Block " + block.string() + " grounded.")
+      // Check if reached grid bottom.
+      if position_component.y == I32.from[USize](grid_component.height() - 1) then
+        _ground_block(block)
+      end
 
-        // Notify listeners.
-        let block_grounded_event = BlockGroundedEvent(block)
-        _game.event_manager().push(block_grounded_event)
+      // Check if hit another block.
+      let x = USize.from[I32](position_component.x)
+      let y = USize.from[I32](position_component.y)
+
+      if grid_component.grid(x)(y + 1) != 0 then
+        _ground_block(block)
       end
     end
+
+  fun ref _ground_block(block: U64): None =>
+    _game.logger().log("Block " + block.string() + " grounded.")
+
+    // Update grid.
+    try
+      let position_component = _game.entity_manager().get_component[PositionComponent](block, "PositionComponent")
+      let grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
+
+      let x = USize.from[I32](position_component.x)
+      let y = USize.from[I32](position_component.y)
+
+      grid_component.grid(x)(y) = 1
+
+      _game.logger().log("Grid blocked at " + x.string() + "/" + y.string())
+    end
+
+    // Notify listeners.
+    let block_grounded_event = BlockGroundedEvent(block)
+    _game.event_manager().push(block_grounded_event)

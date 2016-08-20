@@ -2,7 +2,7 @@ use "ponygame"
 
 class FallSystem is (GameSystem & EventListener)
   // Duration a block stays at its current position before falling again.
-  let _stay_duration_millis: U64 = 500
+  let _stay_duration_millis: U64 = 200
 
   var _game: Game
   var _falling_block: U64

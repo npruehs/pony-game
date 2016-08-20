@@ -15,12 +15,17 @@ class GridComponent is EntityComponent
 
     grid = Array[Array[I32]](_width)
     
-    try
-      for x in Range[USize](1, _width) do
-        grid(x) = Array[I32](_height)
+    for x in Range[USize](0, _width) do
+      var col = Array[I32](_height)
+
+      for y in Range[USize](0, _height) do
+        col = col.push(0)
       end
+
+      grid = grid.push(col)
     end
     
+
   fun width(): USize =>
     _width
   
