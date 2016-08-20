@@ -49,6 +49,6 @@ class EntityManager
       _components(component_type)
     else
       let map = Map[U64, EntityComponent]
-      _components.add(component_type, map)
+      _components(component_type) = map
       map
     end
