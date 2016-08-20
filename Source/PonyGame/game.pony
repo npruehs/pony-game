@@ -16,7 +16,8 @@ class Game
   var _input: Input
   
   var _systems: List[GameSystem]
-  
+  var _running: Bool
+
   
   new create(env: Env) =>
     _env = env
@@ -31,8 +32,9 @@ class Game
     _input = Input
     
     _systems = List[GameSystem]
+    _running = false
     
-    
+
   fun ref init(): Bool =>
     // Read config.
     _config.parse("ponygame.ini")
@@ -155,6 +157,17 @@ class Game
     
     
   fun ref _update(): Bool =>
+    if not _running then
+      // Start all systems.
+      for system in _systems.values() do
+        if not system.start() then
+          false
+        end
+      end 
+
+      _running = true
+    end
+
     for system in _systems.values() do
       system.update()
     end 

@@ -20,6 +20,9 @@ class CharacterSystem is GameSystem
     _posY = 300.0
     true
     
+  fun ref start(): Bool =>
+    true
+
   fun ref update(): Bool =>
     // Handle input.
     if _game.input().dpad_up_pressed(0) then
