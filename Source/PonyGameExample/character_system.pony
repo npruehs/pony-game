@@ -15,7 +15,8 @@ class CharacterSystem is GameSystem
     
     
   fun ref init(): Bool =>
-    _image_id = _game.resource_manager().get_image("pony.png")
+    _image_id = _game.resource_manager().load_image("pony.png")
+
     _posX = 100.0
     _posY = 300.0
     true

@@ -11,7 +11,7 @@ class HudSystem is GameSystem
     
     
   fun ref init(): Bool =>
-    _text_format_id = _game.resource_manager().get_text_format("Verdana", 16, HorizontalAlignmentLeft, VerticalAlignmentLeft)
+    _text_format_id = _game.resource_manager().load_text_format("Verdana", 16, HorizontalAlignmentLeft, VerticalAlignmentLeft)
     true
     
   fun ref start(): Bool =>

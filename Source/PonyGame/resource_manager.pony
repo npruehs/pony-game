@@ -11,9 +11,15 @@ class ResourceManager
   new create() =>
     _images = Map[String, I32]
     _text_formats = Map[TextFormat, I32]
-    
-    
-  fun ref get_image(image: String): I32 =>
+
+  fun get_image(image: String): I32 ? =>
+    try
+      _images(image)
+    else
+      error
+    end
+
+  fun ref load_image(image: String): I32 =>
     try
       _images(image)
     else
@@ -22,7 +28,16 @@ class ResourceManager
       image_id
     end
 
-  fun ref get_text_format(font_name: String, font_size: F32, horizontal_alignment: HorizontalAlignment, vertical_alignment: VerticalAlignment): I32 =>
+  fun get_text_format(font_name: String, font_size: F32, horizontal_alignment: HorizontalAlignment, vertical_alignment: VerticalAlignment): I32 ? =>
+    let text_format = TextFormat(font_name, font_size, horizontal_alignment, vertical_alignment)
+    
+    try
+      _text_formats(text_format)
+    else
+      error
+    end
+
+  fun ref load_text_format(font_name: String, font_size: F32, horizontal_alignment: HorizontalAlignment, vertical_alignment: VerticalAlignment): I32 =>
     let text_format = TextFormat(font_name, font_size, horizontal_alignment, vertical_alignment)
     
     try
