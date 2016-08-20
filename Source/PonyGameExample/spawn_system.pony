@@ -9,6 +9,8 @@ class SpawnSystem is GameSystem
     
     
   fun ref init(): Bool =>
+    // Register listeners.
+    _game.event_manager().add_listener("BlockGroundedEvent", this)
     true
   
   fun ref start(): Bool =>
@@ -21,6 +23,15 @@ class SpawnSystem is GameSystem
     
   fun draw(): None =>
     true
+
+  fun ref notify(event: GameEvent): None =>
+    try
+      _on_block_grounded(event as BlockGroundedEvent)
+    end
+
+  fun ref _on_block_grounded(event: BlockGroundedEvent): None =>
+    // Spawn new block.
+    _spawn_block()
 
   fun ref _spawn_block(): None =>
     // Create entity.
