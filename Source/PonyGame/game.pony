@@ -14,7 +14,9 @@ class Game
   var _renderer: Renderer
   var _resource_manager: ResourceManager
   var _input: Input
-  
+  var _entity_manager: EntityManager
+  var _event_manager: EventManager
+
   var _systems: List[GameSystem]
   var _running: Bool
 
@@ -30,7 +32,9 @@ class Game
     _renderer = Renderer
     _resource_manager = ResourceManager
     _input = Input
-    
+    _entity_manager = EntityManager
+    _event_manager = EventManager
+
     _systems = List[GameSystem]
     _running = false
     
@@ -154,6 +158,12 @@ class Game
     
   fun frame(): U64 =>
     _frame
+    
+  fun entity_manager(): this->EntityManager =>
+    _entity_manager
+
+  fun event_manager(): this->EventManager =>
+    _event_manager
     
     
   fun ref _update(): Bool =>
