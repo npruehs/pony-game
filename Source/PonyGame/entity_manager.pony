@@ -14,14 +14,12 @@ class EntityManager
     _next_id = _next_id + 1
     
   fun ref add_component(entity_id: U64, entity_component: EntityComponent) =>
-      var map = _component_map(entity_component.component_type())
-      map(entity_id) = entity_component
+    var map = _component_map(entity_component.component_type())
+    map(entity_id) = entity_component
 
-  fun ref get_component(entity_id: U64, component_type: String): EntityComponent ? =>
-    var map = _component_map(component_type)
-    
+  fun get_component[A](entity_id: U64, component_type: String): A ? =>
     try
-      map(entity_id)
+      _components(component_type)(entity_id) as A
     else
       error
     end
