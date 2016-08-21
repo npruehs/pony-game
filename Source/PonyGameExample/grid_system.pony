@@ -111,6 +111,9 @@ class GridSystem is GameSystem
 
         // Check if any line complete.
         _check_grid_lines()
+
+        // Remove entity.
+        _game.entity_manager().kill(block)
       end
     end
 
