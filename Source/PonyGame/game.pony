@@ -205,5 +205,5 @@ class Game
         
     success
     
-  fun _shutdown(): None =>
+  fun ref _shutdown(): None =>
      _renderer.shutdown()
