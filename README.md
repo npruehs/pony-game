@@ -6,6 +6,8 @@ PonyGame is a small open-source framework for creating DirectX games with Pony. 
 
 PonyGame requires a running Pony compiler. Please refer to the [official Pony documentation](http://tutorial.ponylang.org/getting-started/) for learning how to get started with Pony.
 
+The PonyGame framework ships with a compiled version of the Pony compiler, though it might be outdated. You can find it in the `Bin/x64` directory of the shipped package.
+
 ## PonyGame Architecture
 
 PonyGame applications consist of three layers:
@@ -67,9 +69,9 @@ As stated above, this requires adding the `ponygame` package. Also, you need to 
 
 PonyGame makes extensive use of the component-based entity system architecture, which you'll learn more about in a second. But before we take a deep dive into building clean and great games, let's take a final look into how to get everything running: We still need to compile our game. For the above code to compile, we need to hint the compiler where to find the native library.
 
-    ponyc -p "Bin\PonyGameNative\x64\Debug" -p "Source" -o Bin\PonyGameExample Source\PonyGameExample
+    Bin\x64\ponyc -p "Bin\x64" -p "Source" -o Bin\PonyGameExample Source\PonyGameExample
 
-This call tells the compiler to include the native library, which can be found at `Bin\PonyGameNative\x64\Debug`, as well as the PonyGame framework, which can be found at `Source`. Then, it sets the output path to `Bin\PonyGameExample` and compiles the game source code from `Source\PonyGameExample`.
+This call tells the compiler to include the native library, which can be found at `Bin\x64` of the shipped package, as well as the PonyGame framework, which can be found at `Source`. Then, it sets the output path to `Bin\PonyGameExample` and compiles the game source code from `Source\PonyGameExample`.
 
 After you've compiled your game, you might want to make sure that you copy the `PonyGameNative.dll` over to your game binaries, as well as any game assets and configuration files you need.
 

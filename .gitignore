@@ -33,3 +33,4 @@ Obj/
 *.sdf
 *.opensdf
 Project/ipch/
+packages/
