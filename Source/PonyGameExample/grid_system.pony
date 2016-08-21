@@ -106,5 +106,41 @@ class GridSystem is GameSystem
         // Notify listeners.
         let block_grounded_event = BlockGroundedEvent(block)
         _game.event_manager().push(block_grounded_event)
+
+        // Check if any line complete.
+        _check_grid_lines()
+      end
+    end
+
+  fun ref _check_grid_lines(): None =>
+    try
+      let game_grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
+
+      for y in Range[USize](0, game_grid_component.height()) do
+        var line_complete: Bool = true
+
+        for x in Range[USize](0, game_grid_component.width()) do
+          if game_grid_component.grid(x)(y) == 0 then
+            line_complete = false
+          end
+        end
+
+        if line_complete then
+          _game.logger().log("Line " + y.string() + " complete!")
+
+          // Remove entire line, moving everything else down.
+          var x': USize = 0
+          var y': USize = y
+          
+          while y' > 0 do
+            while x' < game_grid_component.width() do
+              game_grid_component.grid(x')(y') = game_grid_component.grid(x')(y' - 1)
+              x' = x' + 1  
+            end
+           
+            x' = 0
+            y' = y' - 1
+          end
+        end
       end
     end
