@@ -11,6 +11,7 @@ actor Main
     var fall_system = FallSystem(game)
     var grid_system = GridSystem(game)
     var input_system = InputSystem(game)
+    var score_system = ScoreSystem(game)
 
     var grid_render_system = GridRenderSystem(game)
     var hud_system = HudSystem(game)
@@ -19,7 +20,8 @@ actor Main
     game.add_system(fall_system)
     game.add_system(grid_system)
     game.add_system(input_system)
-
+    game.add_system(score_system)
+    
     game.add_system(grid_render_system)
     game.add_system(hud_system)
     

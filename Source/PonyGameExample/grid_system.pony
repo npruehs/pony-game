@@ -141,6 +141,10 @@ class GridSystem is GameSystem
             x' = 0
             y' = y' - 1
           end
+
+          // Notify listeners.
+          let line_complete_event: LineCompleteEvent ref = LineCompleteEvent
+          _game.event_manager().push(line_complete_event)
         end
       end
     end
