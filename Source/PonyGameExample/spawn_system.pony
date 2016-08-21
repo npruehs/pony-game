@@ -1,11 +1,17 @@
+use "random"
+
 use "ponygame"
 
 class SpawnSystem is GameSystem
+  let _random: MT
+
   var _game: Game
   
   
   new create(game: Game) =>
     _game = game
+
+    _random = MT
     
     
   fun ref init(): Bool =>
@@ -38,23 +44,37 @@ class SpawnSystem is GameSystem
     let entity = _game.entity_manager().create_entity()
 
     // Add components.
-    let image_component = ImageComponent("I.png")
-    _game.entity_manager().add_component(entity, image_component)
-
     let position_component = PositionComponent(5, 0)
     _game.entity_manager().add_component(entity, position_component)
 
     let fall_component = FallComponent
     _game.entity_manager().add_component(entity, fall_component)
-    
-    let grid_component = GridComponent(4, 1)
-    try
-      grid_component.grid(0)(0) = 1
-      grid_component.grid(1)(0) = 1
-      grid_component.grid(2)(0) = 1
-      grid_component.grid(3)(0) = 1
+
+    if (_random.next() % 2) == 0 then
+      let image_component = ImageComponent("I.png")
+      _game.entity_manager().add_component(entity, image_component)
+
+      let grid_component = GridComponent(4, 1)
+      try
+        grid_component.grid(0)(0) = 1
+        grid_component.grid(1)(0) = 1
+        grid_component.grid(2)(0) = 1
+        grid_component.grid(3)(0) = 1
+      end
+      _game.entity_manager().add_component(entity, grid_component)
+    else
+      let image_component = ImageComponent("O.png")
+      _game.entity_manager().add_component(entity, image_component)
+
+      let grid_component = GridComponent(2, 2)
+      try
+        grid_component.grid(0)(0) = 1
+        grid_component.grid(1)(0) = 1
+        grid_component.grid(0)(1) = 1
+        grid_component.grid(1)(1) = 1
+      end
+      _game.entity_manager().add_component(entity, grid_component)
     end
-    _game.entity_manager().add_component(entity, grid_component)
 
     // Notify listeners.
     let block_spawned_event = BlockSpawnedEvent(entity)
