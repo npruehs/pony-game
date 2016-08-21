@@ -51,7 +51,7 @@ class SpawnSystem is GameSystem
     _game.entity_manager().add_component(entity, fall_component)
 
     if (_random.next() % 2) == 0 then
-      let image_component = ImageComponent("I.png")
+      let image_component = ImageComponent("Teal.png")
       _game.entity_manager().add_component(entity, image_component)
 
       let grid_component = GridComponent(4, 1)
@@ -63,7 +63,7 @@ class SpawnSystem is GameSystem
       end
       _game.entity_manager().add_component(entity, grid_component)
     else
-      let image_component = ImageComponent("O.png")
+      let image_component = ImageComponent("Yellow.png")
       _game.entity_manager().add_component(entity, image_component)
 
       let grid_component = GridComponent(2, 2)

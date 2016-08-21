@@ -28,14 +28,32 @@ class InputSystem is GameSystem
 
       // Handle input.
       if (position_component.x > 0) and (_game.input().dpad_left_just_pressed(0)) then
+        // Move left.
         position_component.x = position_component.x - 1
+
+        // Notify listeners.
+        let position_changed_event = PositionChangedEvent(_falling_block,
+          position_component.x + 1,
+          position_component.y,
+          position_component.x,
+          position_component.y)
+        _game.event_manager().push(position_changed_event)
       elseif ((position_component.x + grid_component.width().i32()) < _grid_width) and (_game.input().dpad_right_just_pressed(0)) then
+        // Move right.
         position_component.x = position_component.x + 1
+
+        // Notify listeners.
+        let position_changed_event = PositionChangedEvent(_falling_block,
+          position_component.x - 1,
+          position_component.y,
+          position_component.x,
+          position_component.y)
+        _game.event_manager().push(position_changed_event)
       end
     end
 
     true
-    
+
   fun draw(): None =>
     true
 

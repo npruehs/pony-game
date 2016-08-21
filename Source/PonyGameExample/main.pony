@@ -13,7 +13,6 @@ actor Main
     var input_system = InputSystem(game)
 
     var grid_render_system = GridRenderSystem(game)
-    var block_render_system = BlockRenderSystem(game)
     var hud_system = HudSystem(game)
 
     game.add_system(spawn_system)
@@ -22,7 +21,6 @@ actor Main
     game.add_system(input_system)
 
     game.add_system(grid_render_system)
-    game.add_system(block_render_system)
     game.add_system(hud_system)
     
     // Initialize game.

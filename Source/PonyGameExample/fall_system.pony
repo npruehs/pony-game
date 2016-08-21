@@ -43,7 +43,11 @@ class FallSystem is (GameSystem & EventListener)
           fall_component.last_fall_time = _game.clock().elapsed_millis()
 
           // Notify listeners.
-          let position_changed_event = PositionChangedEvent(_falling_block)
+          let position_changed_event = PositionChangedEvent(_falling_block,
+            position_component.x,
+            position_component.y - 1,
+            position_component.x,
+            position_component.y)
           _game.event_manager().push(position_changed_event)
         end
       end
