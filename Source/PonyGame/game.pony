@@ -37,9 +37,55 @@ class Game
 
     _systems = List[GameSystem]
     _running = false
-    
 
-  fun ref init(): Bool =>
+
+  fun ref init_and_run(): None =>
+    // Initialize game.
+    if _init() then
+      var running: Bool = true
+      
+      // Main loop.
+      while running do
+        running = _tick()
+      end
+    end
+
+  fun ref add_system(system: GameSystem): None =>
+    _systems.push(system)
+
+    
+  fun config(): this->GameConfig =>
+    _config
+    
+  fun logger(): this->Logger[String] =>
+    _logger
+    
+  fun clock(): this->GameClock =>
+    _clock
+    
+  fun fps_counter(): this->FpsCounter => 
+    _fps_counter
+    
+  fun resource_manager(): this->ResourceManager =>
+    _resource_manager
+  
+  fun renderer(): this->Renderer =>
+    _renderer
+  
+  fun input(): this->Input =>
+    _input
+    
+  fun frame(): U64 =>
+    _frame
+    
+  fun entity_manager(): this->EntityManager =>
+    _entity_manager
+
+  fun event_manager(): this->EventManager =>
+    _event_manager
+    
+    
+ fun ref _init(): Bool =>
     // Read config.
     _config.parse("ponygame.ini")
     
@@ -113,11 +159,8 @@ class Game
     end 
     
     true
-    
-  fun ref add_system(system: GameSystem): None =>
-    _systems.push(system)
-    
-  fun ref tick(): Bool =>
+ 
+  fun ref _tick(): Bool =>
     _frame = _frame + 1
     _fps_counter.tick()
     
@@ -133,38 +176,7 @@ class Game
       _shutdown()
       false
     end
-    
-  fun config(): this->GameConfig =>
-    _config
-    
-  fun logger(): this->Logger[String] =>
-    _logger
-    
-  fun clock(): this->GameClock =>
-    _clock
-    
-  fun fps_counter(): this->FpsCounter => 
-    _fps_counter
-    
-  fun resource_manager(): this->ResourceManager =>
-    _resource_manager
-  
-  fun renderer(): this->Renderer =>
-    _renderer
-  
-  fun input(): this->Input =>
-    _input
-    
-  fun frame(): U64 =>
-    _frame
-    
-  fun entity_manager(): this->EntityManager =>
-    _entity_manager
 
-  fun event_manager(): this->EventManager =>
-    _event_manager
-    
-    
   fun ref _update(): Bool =>
     if not _running then
       // Start all systems.

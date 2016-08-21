@@ -25,12 +25,5 @@ actor Main
     game.add_system(grid_render_system)
     game.add_system(hud_system)
     
-    // Initialize game.
-    if game.init() then
-      var running: Bool = true
-      
-      // Main loop.
-      while running do
-        running = game.tick()
-      end
-    end
+    // Start game.
+    game.init_and_run()
