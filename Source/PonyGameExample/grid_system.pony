@@ -1,3 +1,5 @@
+use "collections"
+
 use "ponygame"
 
 class GridSystem is GameSystem
@@ -49,19 +51,32 @@ class GridSystem is GameSystem
     _game.logger().log("Block " + block.string() + " position changed.")
 
     try
-      let position_component = _game.entity_manager().get_component[PositionComponent](block, "PositionComponent")
-      let grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
+      let block_position_component = _game.entity_manager().get_component[PositionComponent](block, "PositionComponent")
+      let block_grid_component = _game.entity_manager().get_component[GridComponent](block, "GridComponent")
+      let game_grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
+
+      var grounded: Bool = false
 
       // Check if reached grid bottom.
-      if position_component.y == I32.from[USize](grid_component.height() - 1) then
-        _ground_block(block)
+      if block_position_component.y == (_height - 1) then
+        grounded = true
       end
 
       // Check if hit another block.
-      let x = USize.from[I32](position_component.x)
-      let y = USize.from[I32](position_component.y)
+      for x in Range[USize](0, block_grid_component.width()) do
+        if block_grid_component.grid(x)(0) > 0 then
+          let grid_x = x + block_position_component.x.usize()
+          let grid_y = block_position_component.y.usize()
 
-      if grid_component.grid(x)(y + 1) != 0 then
+          try
+            if game_grid_component.grid(grid_x)(grid_y + 1) != 0 then
+              grounded = true
+            end
+          end 
+        end
+      end
+
+      if grounded then 
         _ground_block(block)
       end
     end
@@ -71,15 +86,22 @@ class GridSystem is GameSystem
 
     // Update grid.
     try
-      let position_component = _game.entity_manager().get_component[PositionComponent](block, "PositionComponent")
-      let grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
+      let block_position_component = _game.entity_manager().get_component[PositionComponent](block, "PositionComponent")
+      let block_grid_component = _game.entity_manager().get_component[GridComponent](block, "GridComponent")
+      let game_grid_component = _game.entity_manager().get_component[GridComponent](_grid, "GridComponent")
 
-      let x = USize.from[I32](position_component.x)
-      let y = USize.from[I32](position_component.y)
+      for x in Range[USize](0, block_grid_component.width()) do
+        for y in Range[USize](0, block_grid_component.height()) do
+          if block_grid_component.grid(x)(y) > 0 then
+            let grid_x = x + block_position_component.x.usize()
+            let grid_y = y + block_position_component.y.usize()
 
-      grid_component.grid(x)(y) = 1
+            game_grid_component.grid(grid_x)(grid_y) = 1
 
-      _game.logger().log("Grid blocked at " + x.string() + "/" + y.string())
+            _game.logger().log("Grid blocked at " + grid_x.string() + "/" + grid_y.string())
+          end
+        end
+      end
     end
 
     // Notify listeners.
