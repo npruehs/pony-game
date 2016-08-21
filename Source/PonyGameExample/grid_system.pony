@@ -31,6 +31,8 @@ class GridSystem is GameSystem
     let grid_initialized_event = GridInitializedEvent(_grid, _width, _height)
     _game.event_manager().push(grid_initialized_event)
 
+    _game.logger().log(_width.string() + " x " + _height.string() + " grid initialized.")
+    
     true
 
   fun ref update(): Bool =>
@@ -109,6 +111,9 @@ class GridSystem is GameSystem
 
         // Check if any line complete.
         _check_grid_lines()
+
+        // Remove entity.
+        _game.entity_manager().kill(block)
       end
     end
 

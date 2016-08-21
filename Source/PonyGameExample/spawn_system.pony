@@ -47,13 +47,16 @@ class SpawnSystem is GameSystem
     let entity = _game.entity_manager().create_entity()
 
     // Add components.
+    let block_id = _random.next() % 2
+
     let position_component = PositionComponent(5, 0)
     _game.entity_manager().add_component(entity, position_component)
 
     let fall_component = FallComponent
     _game.entity_manager().add_component(entity, fall_component)
 
-    if (_random.next() % 2) == 0 then
+    if block_id == 0 then
+      // I
       let image_component = ImageComponent("Teal.png")
       _game.entity_manager().add_component(entity, image_component)
 
@@ -66,6 +69,7 @@ class SpawnSystem is GameSystem
       end
       _game.entity_manager().add_component(entity, grid_component)
     else
+      // O
       let image_component = ImageComponent("Yellow.png")
       _game.entity_manager().add_component(entity, image_component)
 
@@ -82,3 +86,5 @@ class SpawnSystem is GameSystem
     // Notify listeners.
     let block_spawned_event = BlockSpawnedEvent(entity)
     _game.event_manager().push(block_spawned_event)
+
+    _game.logger().log("Block type " + block_id.string() + " spawned.")

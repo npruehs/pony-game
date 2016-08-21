@@ -19,11 +19,12 @@ class GridRenderSystem is GameSystem
     // Register listeners.
     _game.event_manager().add_listener("GridInitializedEvent", this)
 
+    // Load grid background.
+    _grid_image = _game.resource_manager().load_image("GridBorder.png")
+
     true
   
   fun ref start(): Bool =>
-    // Load grid background.
-    _grid_image = _game.resource_manager().load_image("GridBorder.png")
     true
 
   fun ref update(): Bool =>

@@ -66,4 +66,4 @@ class FallSystem is (GameSystem & EventListener)
   fun ref _on_block_spawned(event: BlockSpawnedEvent): None =>
     // Start falling.
     _falling_block = event.entity
-    _game.logger().log("Falling block set to " + _falling_block.string())
+    _game.logger().log("Falling block set to " + _falling_block.string() + ".")
