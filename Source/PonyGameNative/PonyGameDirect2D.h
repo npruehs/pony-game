@@ -14,6 +14,9 @@ namespace PonyGame
 	// Initialize device-dependent resources.
 	HRESULT CreateDeviceResources();
 
+	// Release device-independent resource.
+	void DiscardDeviceIndependentResources();
+
 	// Release device-dependent resource.
 	void DiscardDeviceResources();
 

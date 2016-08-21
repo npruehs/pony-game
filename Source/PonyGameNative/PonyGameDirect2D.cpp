@@ -132,6 +132,13 @@ HRESULT PonyGame::CreateDeviceResources()
 	return hr;
 }
 
+void PonyGame::DiscardDeviceIndependentResources()
+{
+	SafeRelease(&direct2dFactory);
+	SafeRelease(&directWriteFactory);
+	SafeRelease(&imagingFactory);
+}
+
 void PonyGame::DiscardDeviceResources()
 {
 	SafeRelease(&renderTarget);
@@ -462,8 +469,8 @@ PONYGAMENATIVE_API void Uninitialize(void)
 {
 	using namespace PonyGame;
 
-	SafeRelease(&direct2dFactory);
-	SafeRelease(&renderTarget);
+	DiscardDeviceResources();
+	DiscardDeviceIndependentResources();
 
 	CoUninitialize();
 }
