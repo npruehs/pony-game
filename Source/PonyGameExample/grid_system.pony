@@ -58,7 +58,7 @@ class GridSystem is GameSystem
       var grounded: Bool = false
 
       // Check if reached grid bottom.
-      if block_position_component.y == (_height - 1) then
+      if (block_grid_component.height().i32() + block_position_component.y) == _height then
         grounded = true
       end
 
@@ -66,10 +66,10 @@ class GridSystem is GameSystem
       for x in Range[USize](0, block_grid_component.width()) do
         if block_grid_component.grid(x)(0) > 0 then
           let grid_x = x + block_position_component.x.usize()
-          let grid_y = block_position_component.y.usize()
+          let grid_y = block_grid_component.height() + block_position_component.y.usize()
 
           try
-            if game_grid_component.grid(grid_x)(grid_y + 1) != 0 then
+            if game_grid_component.grid(grid_x)(grid_y) != 0 then
               grounded = true
             end
           end 
