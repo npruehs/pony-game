@@ -1,4 +1,5 @@
 use "random"
+use "time"
 
 use "ponygame"
 
@@ -11,7 +12,9 @@ class SpawnSystem is GameSystem
   new create(game: Game) =>
     _game = game
 
-    _random = MT
+    let time = Time
+    let seed = time.wall_to_nanos(time.now())
+    _random = MT(seed)
     
     
   fun ref init(): Bool =>
