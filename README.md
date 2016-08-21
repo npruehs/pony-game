@@ -273,3 +273,22 @@ You can use the game `Logger` for writing additional diagnostics information to 
 
 This file will be written to `ponygame.log` next to the game executable.
 
+## Next Steps
+
+We strongly recommend taking a look at the example game provided with the framework. The source files in the folder `Source/PonyGameExample` can be compiled to a clone of a very popular small game and should illustrate well how to build games with PonyGame.
+
+If you have any questions or remarks, please [let us know](https://github.com/npruehs/pony-game/issues/new). We always love to improve our documentation!
+
+## Bugs & Feature Requests
+
+PonyGame is still in early development. After verifying that you are using the [latest version](https://github.com/npruehs/pony-game/releases) of PonyGame and having checked whether a [similar issue](https://github.com/npruehs/pony-game/issues) has already been reported, feel free to [open a new issue](https://github.com/npruehs/pony-game/issues/new). In order to help us resolving your problem as fast as possible, please include the following details in your report:
+
+* Steps to reproduce
+* What happened?
+* What did you expect to happen?
+
+After being able to reproduce the issue, we'll look into fixing it immediately.
+
+## License
+
+PonyGame is released under the [MIT license](https://github.com/npruehs/pony-game/blob/master/LICENSE).
