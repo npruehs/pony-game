@@ -1,8 +1,10 @@
 use "ponygame"
 
 class GridSystem is GameSystem
+  let _width: I32 = 10
+  let _height: I32 = 20
+
   var _game: Game
-  
   var _grid: U64
   
   new create(game: Game) =>
@@ -20,8 +22,12 @@ class GridSystem is GameSystem
     _grid = _game.entity_manager().create_entity()
 
     // Add components.
-    let grid_component = GridComponent(10, 20)
+    let grid_component = GridComponent(_width.usize(), _height.usize())
     _game.entity_manager().add_component(_grid, grid_component)
+
+    // Notify listeners.
+    let grid_initialized_event = GridInitializedEvent(_width, _height)
+    _game.event_manager().push(grid_initialized_event)
 
     true
 

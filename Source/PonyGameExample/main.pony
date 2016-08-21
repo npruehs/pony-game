@@ -12,12 +12,14 @@ actor Main
     var block_render_system = BlockRenderSystem(game)
     var fall_system = FallSystem(game)
     var grid_system = GridSystem(game)
+    var input_system = InputSystem(game)
 
     game.add_system(hud_system)
     game.add_system(spawn_system)
     game.add_system(block_render_system)
     game.add_system(fall_system)
     game.add_system(grid_system)
+    game.add_system(input_system)
     
     // Initialize game.
     if game.init() then
