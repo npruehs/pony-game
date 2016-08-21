@@ -27,3 +27,10 @@
 *.exe
 *.out
 *.app
+Bin/
+Obj/
+*.suo
+*.sdf
+*.opensdf
+Project/ipch/
+packages/
