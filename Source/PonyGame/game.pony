@@ -128,13 +128,12 @@ class Game
     end
     
     if success then
-      _input.tick()
       true
     else
       _shutdown()
       false
     end
-     
+    
   fun config(): this->GameConfig =>
     _config
     
@@ -177,6 +176,9 @@ class Game
 
       _running = true
     end
+
+    // Poll input.
+    _input.tick()
 
     // Update all systems.
     for system in _systems.values() do
